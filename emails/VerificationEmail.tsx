@@ -5,10 +5,7 @@ interface VerificationEmailProps {
   otp: string;
 }
 
-export default function VerificationEmail({
-  username,
-  otp,
-}: VerificationEmailProps) {
+const VerificationEmail = ({ username, otp }: VerificationEmailProps) => {
   return (
     <div className="font-sans text-gray-800 max-w-lg mx-auto p-6 border border-gray-300 rounded-lg bg-gray-100">
       <h1 className="text-2xl font-bold text-gray-800">Welcome, {username}!</h1>
@@ -32,4 +29,6 @@ export default function VerificationEmail({
       </p>
     </div>
   );
-}
+};
+
+export default VerificationEmail;
