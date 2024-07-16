@@ -8,15 +8,25 @@ const SignIn = () => {
     return (
       <>
         Signed in as {session.user.email} <br />
-        <button onClick={() => signOut()}>Sign out</button>
+        <button
+          className="btn border px-6 py-2 rounded-md bg-orange-400"
+          onClick={() => signOut()}
+        >
+          Sign out
+        </button>
       </>
     );
   }
 
   return (
-    <div>
+    <div className=" flex flex-col h-screen justify-center items-center">
       Not signed in <br />
-      <button onClick={() => signIn()}>Sign in</button>
+      <button
+        className="btn border px-6 py-2 rounded-md bg-orange-400 mt-2 text-white font-semibold"
+        onClick={() => signIn()}
+      >
+        Sign in
+      </button>
     </div>
   );
 };
