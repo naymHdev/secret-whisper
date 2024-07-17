@@ -66,3 +66,58 @@ export async function POST(request: Request) {
     );
   }
 }
+
+export async function GET(request: Request) {
+  await dbConnect();
+  const session = await getServerSession(authOptions);
+  const user: User = session?.user as User;
+
+  if (!session || !session.user) {
+    return Response.json(
+      {
+        success: false,
+        message: "Not Authenticated",
+      },
+      {
+        status: 401,
+      }
+    );
+  }
+  const userId = user._id;
+
+  try {
+    const foundUser = await userModel.findById(userId);
+    if (!foundUser) {
+      return Response.json(
+        {
+          success: false,
+          message: "Failed to found the user",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+    return Response.json(
+      {
+        success: true,
+        isAcceptingMessages: foundUser.isAcceptingMessage,
+        message: "Failed to found the user",
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (error) {
+    console.error("Failed to found user", error);
+    return Response.json(
+      {
+        success: false,
+        message: "Failed to found user",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
