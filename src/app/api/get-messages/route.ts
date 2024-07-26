@@ -51,5 +51,16 @@ export async function GET(request: Request) {
         status: 200,
       }
     );
-  } catch (error) {}
+  } catch (error) {
+    console.error("user get message error", error);
+    return Response.json(
+      {
+        success: false,
+        message: "User get message unexpected",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
