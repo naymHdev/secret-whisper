@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { User } from "next-auth";
-import { Button } from "./button";
+import { Button } from "../ui/button";
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -10,9 +10,9 @@ const Navbar = () => {
 
   return (
     <>
-      <nav>
+      <nav className=" px-4 md:px-6 lg:px-10 py-4 shadow-sm">
         <div className=" flex items-center justify-between">
-          <a className=" text-xl font-bold mb-4 md:mb-0" href="#">
+          <a className=" text-xl font-bold" href="#">
             Mystery Message
           </a>
           <div>
