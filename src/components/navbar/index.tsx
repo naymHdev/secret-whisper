@@ -12,7 +12,7 @@ const Navbar = () => {
     <>
       <nav className=" px-4 md:px-6 lg:px-10 py-4 shadow-sm">
         <div className=" flex items-center justify-between">
-          <a className=" text-xl font-bold" href="#">
+          <a className=" text-xl font-bold" href="/">
             Mystery Message
           </a>
           <div>
