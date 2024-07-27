@@ -7,22 +7,58 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signInSchema } from "@/schemas/signinSchema";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import Link from "next/link";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 const SignIn = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
+    defaultValues: {
+      identifier: "",
+      password: "",
+    },
   });
 
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
-    try {
-    } catch (error) {}
+    setIsSubmitting(true);
+
+    const res = await signIn("credentials", {
+      identifier: data.identifier,
+      password: data.password,
+      redirect: false,
+    });
+
+    if (res?.error) {
+      toast({
+        title: "Login failed",
+        description: "Incorrect username or password",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: res?.error,
+        variant: "destructive",
+      });
+    }
+
+    if (res?.url) {
+      router.replace("/dashboard");
+    }
   };
 
   return (
@@ -39,12 +75,12 @@ const SignIn = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
-                name="email"
+                name="identifier"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Email/Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="exapmle@gmail.com" {...field} />
+                      <Input placeholder="email or username" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -63,7 +99,16 @@ const SignIn = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Sign in</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className=" mr-2 h-4 w-4 animate-spin" /> Please
+                    wait...
+                  </>
+                ) : (
+                  "Sign in"
+                )}
+              </Button>
             </form>
           </Form>
           <div className=" mt-5 text-center">
