@@ -53,8 +53,9 @@ const SignUp = () => {
           const response = await axios.get(
             `/api/check-username-unique?username=${username}`
           );
-          // console.log("checkUsernameUnique response >", response);
-          setUsernameMessages(response.data.message);
+          let resMessage = response?.data?.message;
+          // console.log("checkUsernameUnique response message >", resMessage);
+          setUsernameMessages(resMessage);
         } catch (error) {
           // console.error("User name messages error", error);
 
@@ -124,18 +125,20 @@ const SignUp = () => {
                         }}
                       />
                     </FormControl>
-                    {isCheckingUsername && (
-                      <Loader2 className=" mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    <p
-                      className={`text-sm ${
-                        usernameMessages === "Username is unique"
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      Test {usernameMessages}
-                    </p>
+                    <div className=" flex items-center gap-3">
+                      {isCheckingUsername && (
+                        <Loader2 className=" mr-2 h-4 w-4 animate-spin" />
+                      )}
+                      <p
+                        className={`text-sm ${
+                          usernameMessages === "Username is unique"
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        Test {usernameMessages}
+                      </p>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -147,7 +150,7 @@ const SignUp = () => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="email" {...field} />
+                      <Input placeholder="exapmle@gmail.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -160,7 +163,7 @@ const SignUp = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="pass***" {...field} />
+                      <Input type="password" placeholder="******" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
