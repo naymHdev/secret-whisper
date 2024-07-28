@@ -67,7 +67,7 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-            <CardDescription>Card Description</CardDescription>
+            <CardDescription>{message}</CardDescription>
           </CardHeader>
         </Card>
       </div>
