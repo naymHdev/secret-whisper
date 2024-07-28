@@ -1,7 +1,12 @@
 "use client";
 
 import Autoplay from "embla-carousel-autoplay";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -9,6 +14,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { staticMessage } from "@/data/data";
 
 const Home = () => {
   return (
@@ -20,19 +26,21 @@ const Home = () => {
           </h1>
         </section>
         <Carousel
-          plugins={[Autoplay({ delay: 2000 })]}
+          plugins={[Autoplay({ delay: 3000 })]}
           className="w-full max-w-xs"
         >
           <CarouselContent>
-            {Array.from({ length: 5 }).map((_, index) => (
+            {staticMessage.map((message, index) => (
               <CarouselItem key={index}>
                 <div className="p-1">
                   <Card>
+                    <CardHeader>{message.title}</CardHeader>
                     <CardContent className="flex aspect-square items-center justify-center p-6">
-                      <span className="text-4xl font-semibold">
-                        {index + 1}
+                      <span className=" text-lg font-semibold">
+                        {message.content}
                       </span>
                     </CardContent>
+                    <CardFooter>{message.received}</CardFooter>
                   </Card>
                 </div>
               </CarouselItem>
