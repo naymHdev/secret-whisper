@@ -6,8 +6,9 @@ import { acceptMessageSchema } from "@/schemas/acceptMessageSchema";
 import { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
+import { User } from "next-auth";
 import { useSession } from "next-auth/react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const Dashboard = () => {
@@ -81,6 +82,52 @@ const Dashboard = () => {
     },
     [toast, setIsLoading, setMessages]
   );
+
+  useEffect(() => {
+    if (!session || session.user) return;
+    fetchMessages();
+    fetchAcceptMessages();
+  }, [session, setValue, fetchAcceptMessages, fetchMessages]);
+
+  const handelSwitchMessage = async () => {
+    try {
+      const res = await axios.post<ApiResponse>("/api/accept-messages", {
+        acceptMessages: !acceptMessages,
+      });
+      setValue("AcceptMessages", !acceptMessages);
+      toast({
+        title: res.data.message,
+        description: "Default",
+      });
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse>;
+      toast({
+        title: "Error",
+        description:
+          axiosError.response?.data.message ||
+          "Failed to fetch message settings",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const { username } = session?.user as User;
+
+  // TODO: do more research
+  const baseUrl = `${window.location.protocol}//${window.location.host}`;
+  const profileUrl = `${baseUrl}/u/{username}`;
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(profileUrl);
+    toast({
+      title: "URL copied",
+      description: "Profile URL has been copied to clipboard",
+    });
+  };
+
+  if (!session || !session.user) {
+    return <div>Please Login</div>;
+  }
 
   return (
     <>
