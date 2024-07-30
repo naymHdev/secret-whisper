@@ -22,19 +22,21 @@ import { signIn } from "next-auth/react";
 
 const SignIn = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
-    defaultValues: {
-      identifier: "",
-      password: "",
-    },
+    // defaultValues: {
+    //   identifier: "",
+    //   password: "",
+    // },
   });
 
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     setIsSubmitting(true);
+    console.log("data___", data);
 
     const res = await signIn("credentials", {
       identifier: data.identifier,
@@ -43,12 +45,15 @@ const SignIn = () => {
     });
 
     if (res?.error) {
+      console.log("error_", res.error);
+
       toast({
-        title: "Login failed",
-        description: "Incorrect username or password",
+        title: "Login failed!",
+        description: "Incorrect username or password!",
         variant: "destructive",
       });
     } else {
+      console.log("res___", res);
       toast({
         title: "Error",
         description: res?.error,
@@ -60,6 +65,12 @@ const SignIn = () => {
       router.replace("/dashboard");
     }
   };
+
+  // Handle form submission logic here
+  setTimeout(() => {
+    setShowLoader(false);
+    setIsSubmitting(false);
+  }, 5000);
 
   return (
     <>
@@ -102,8 +113,10 @@ const SignIn = () => {
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
-                    <Loader2 className=" mr-2 h-4 w-4 animate-spin" /> Please
-                    wait...
+                    {showLoader && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    Please wait...
                   </>
                 ) : (
                   "Sign in"

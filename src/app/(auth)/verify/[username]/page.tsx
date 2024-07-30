@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 const VerifyAccount = () => {
   const router = useRouter();
   const params = useParams<{ username: string }>();
+  console.log("params", params);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof verifySchema>>({
@@ -40,7 +41,7 @@ const VerifyAccount = () => {
         description: res?.data?.message,
       });
 
-      router.replace("sign-in");
+      router.replace("/sign-in");
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast({
