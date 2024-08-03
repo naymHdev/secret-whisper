@@ -1,49 +1,60 @@
 import bcrypt from "bcryptjs";
-import CredentialsProvider from "next-auth/providers/credentials";
+import credentialsProvider from "next-auth/providers/credentials";
 import { NextAuthOptions } from "next-auth";
 import dbConnect from "@/lib/dbConnect";
 import userModel from "@/model/User";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    CredentialsProvider({
+    credentialsProvider({
       id: "credentials",
       name: "credentials",
+      type: "credentials",
       credentials: {
         email: {
           label: "Email",
           type: "text",
           placeholder: "smith@example.com",
         },
-        password: { label: "Password", type: "pass***" },
+        password: { label: "Password", type: "password" },
       },
       authorize: async (credentials: any): Promise<any> => {
         await dbConnect();
         try {
+          if (!credentials?.identifier || !credentials?.password) {
+            throw new Error("Missing credentials");
+          }
+
           const user = await userModel.findOne({
             $or: [
               { email: credentials.identifier },
               { username: credentials.identifier },
             ],
           });
+
           console.log("user___", user, "credentials__", credentials);
+
           if (!user) {
-            throw new Error("No user found this email");
+            throw new Error("No user found with this email or username");
           }
+
           if (!user.isVerified) {
             throw new Error("Please verify your account first!");
           }
-          const isPasswordConnect = await bcrypt.compare(
-            credentials.Password,
+
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password, // Ensure this is the correct property name
             user.password
           );
-          if (isPasswordConnect) {
+
+          if (isPasswordValid) {
             return user;
           } else {
             throw new Error("Incorrect password");
           }
         } catch (error: any) {
-          throw new Error(error);
+          console.error("Authorize error:", error.message); // Log the error for debugging
+          throw new Error("Authentication failed");
         }
       },
     }),
