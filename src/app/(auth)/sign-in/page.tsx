@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { signInSchema } from "@/schemas/signinSchema";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,10 +18,10 @@ import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { Input } from "@/components/ui/input";
 
 const SignIn = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showLoader, setShowLoader] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -66,12 +65,6 @@ const SignIn = () => {
     }
   };
 
-  // Handle form submission logic here
-  setTimeout(() => {
-    setShowLoader(false);
-    setIsSubmitting(false);
-  }, 5000);
-
   return (
     <>
       <div className=" flex flex-col items-center justify-center h-screen">
@@ -91,7 +84,11 @@ const SignIn = () => {
                   <FormItem>
                     <FormLabel>Email/Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="email or username" {...field} />
+                      <Input
+                        type="text"
+                        placeholder="email or username"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -113,10 +110,9 @@ const SignIn = () => {
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
-                    {showLoader && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    Please wait...
+                    (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />) Please
+                    wait...
                   </>
                 ) : (
                   "Sign in"
